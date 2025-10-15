@@ -50,22 +50,24 @@ class OmniPart_SM_Model(io.ComfyNode):
                 io.Combo.Input("box_ckpt",options= ["none"] + [i for i in folder_paths.get_filename_list("OmniPart") if "box" in i.lower()]),
                 io.Combo.Input("partfield_encoder",options= ["none"] + [i for i in folder_paths.get_filename_list("OmniPart") if "encoder" in i.lower()]),
                 io.Combo.Input("dino",options= ["none"] + folder_paths.get_filename_list("dinov2") ),
+                io.Combo.Input("dino_l",options= ["none"] + folder_paths.get_filename_list("dinov2") ),
             ],
             outputs=[
                 io.Custom("OmniPart_SM_Model").Output(),
                 ],
             )
     @classmethod
-    def execute(cls, custom_path,box_ckpt,partfield_encoder,dino) -> io.NodeOutput:
+    def execute(cls, custom_path,box_ckpt,partfield_encoder,dino,dino_l) -> io.NodeOutput:
         part_synthesis_ckpt=PureWindowsPath(custom_path).as_posix() if custom_path else None
         bbox_gen_ckpt=folder_paths.get_full_path("OmniPart", box_ckpt) if box_ckpt != "none" else None
         partfield_encoder_path=folder_paths.get_full_path("OmniPart", partfield_encoder) if box_ckpt != "none" else None
         dino_path=folder_paths.get_full_path("dinov2", dino) if dino != "none" else None
-        assert bbox_gen_ckpt is not None and partfield_encoder is not None and dino_path is not None, "Please select the BboxGen  and partfield_encoder and dino checkpoint file"
+        dino_l_path=folder_paths.get_full_path("dinov2", dino_l) if dino_l != "none" else None
+        assert bbox_gen_ckpt is not None and partfield_encoder is not None and dino_path is not None and dino_l_path is not None, "Please select the BboxGen  and partfield_encoder and dino and  dino l checkpoint file"
         config_path=os.path.join(node_cr_path,"OmniPart/configs/bbox_gen.yaml")
         if part_synthesis_ckpt is None:
             part_synthesis_ckpt="omnipart/OmniPart"
-        part_synthesis_pipeline,bbox_gen_model=apply_base_model(part_synthesis_ckpt,partfield_encoder_path,bbox_gen_ckpt,dino_path,config_path,node_cr_path)
+        part_synthesis_pipeline,bbox_gen_model=apply_base_model(part_synthesis_ckpt,partfield_encoder_path,bbox_gen_ckpt,dino_path,config_path,node_cr_path,dino_l_path)
         model={"part_synthesis_pipeline":part_synthesis_pipeline,"bbox_gen_model":bbox_gen_model}
         return io.NodeOutput(model)
     
