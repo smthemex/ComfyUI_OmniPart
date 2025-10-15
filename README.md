@@ -40,7 +40,7 @@ pip install -r requirements.txt
   
 
 # Example
-![](https://github.com/smthemex/ComfyUI_OmniPart/blob/main/example_workflows/example.png)
+![](https://github.com/smthemex/ComfyUI_OmniPart/blob/main/example_workflows/example1015.png)
 
 # Acknowledgements
 [TRELLIS](https://github.com/microsoft/TRELLIS)  
