@@ -80,7 +80,7 @@ def load_state_data(state, load_dir):
 
 
 
-def apply_base_model(part_synthesis_ckpt,partfield_encoder_path,bbox_gen_ckpt,dino_path,config_path,current_path):
+def apply_base_model(part_synthesis_ckpt,partfield_encoder_path,bbox_gen_ckpt,dino_path,config_path,current_path,dino_l_path):
     # load part_synthesis model
     OmniPartImageTo3DPipeline.dino=dino_path
     OmniPartImageTo3DPipeline.dino_moudel=os.path.join(current_path,"facebookresearch/dinov2")
@@ -92,7 +92,7 @@ def apply_base_model(part_synthesis_ckpt,partfield_encoder_path,bbox_gen_ckpt,di
     # load bbox_gen model
     bbox_gen_config = OmegaConf.load(config_path).model.args
     bbox_gen_config.partfield_encoder_path = partfield_encoder_path
-    bbox_gen_model = BboxGen(bbox_gen_config,os.path.join(current_path,"OmniPart/configs/dinov2-with-registers-large"),ckpt="F:/ComfyUI311/ComfyUI/models/dinov2/model.safetensors")
+    bbox_gen_model = BboxGen(bbox_gen_config,os.path.join(current_path,"OmniPart/configs/dinov2-with-registers-large"),ckpt=dino_l_path)
     
     bbox_gen_model.load_state_dict(torch.load(bbox_gen_ckpt,weights_only=False), strict=False)
    
